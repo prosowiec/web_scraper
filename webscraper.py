@@ -99,9 +99,11 @@ def scrap_images(soup,ASIN):
   soup = str(soup)
   image_list = re.findall(re.compile('(?<={"hiRes":")(.*?)(?=","thumb")'), soup)
 
-  if image_list[1] == None:
-    soup_fr = find_url_and_prettify_FR(ASIN)
-    image_list = re.findall(re.compile('(?<={"hiRes":")(.*?)(?=","thumb")'), soup_fr)
+  if not image_list:
+    soup_FR = find_url_and_prettify_FR(ASIN)
+    soup_FR = str(soup_FR)
+    image_list = re.findall(re.compile('(?<={"hiRes":")(.*?)(?=","thumb")'), soup_FR)
+
 
   directory = "images\\{}".format(ASIN)
   mode = 0o666
