@@ -144,14 +144,14 @@ def tech_spec(soup):
 
 
 def summing_everything_up_pl(soup_pl):
-  text_ = "AMAZON PL -------------------------------------------------------------------------- \n" "GŁÓWNY OPIS: \n"+ scrap_description(soup_pl) +"\n" \
-  + "GŁÓWNA TABELA: \n\n" + scrap_tables(soup_pl) +"\n" + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_pl) +"\n"
+  text_ = "AMAZON PL -------------------------------------------------------------------------- \n" "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_pl) +"\n" \
+  + "GŁÓWNA TABELA: \n" + scrap_tables(soup_pl) +"\n" + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_pl) +"\n"
   
   return text_
 
 def summing_everything_up_de(soup_de):
   text_ = "AMAZON DE -------------------------------------------------------------------------- \n" \
-  + "GŁÓWNY OPIS: \n"+ scrap_description(soup_de) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_de) +"\n" \
+  + "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_de) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_de) +"\n" \
   + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  +tech_spec(soup_de) +"\n"
   
   return text_
@@ -159,7 +159,7 @@ def summing_everything_up_de(soup_de):
 def summing_everything_up_fr(soup_fr):
   text_ = "AMAZON FR  -------------------------------------------------------------------------- \n" \
   + "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_fr) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_fr) +"\n" \
-  + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  +tech_spec(soup_fr) +"\n"
+  + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_fr) +"\n"
   
   return text_
 
