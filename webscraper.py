@@ -25,15 +25,15 @@ def find_url_and_prettify_DE(ASIN):
   soup.prettify()
   return soup
 
-''' #Still in progress
+
 def find_url_and_prettify_FR(ASIN):
-  url = "https://www.amazon.pl/-/dp/{}".format(ASIN)
+  url = "https://www.amazon.fr/-/dp/{}".format(ASIN)
   agent = {"User-Agent":'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'}
   r = requests.get(url, headers=agent)
   soup = BeautifulSoup(r.content, 'html.parser')
   soup.prettify()
   return soup
-'''
+
 
 def scrap_description(soup):
   description = soup.find_all("p")
@@ -137,23 +137,14 @@ def summing_everything_up_de(soup_de):
     + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_de) +"\n"
   return text_
 
+def summing_everything_up_fr(soup_fr):
+  text_ = "AMAZON FR  ------------------- \n" + "GŁÓWNY OPIS: \n"+ scrap_description(soup_fr) +"\n" + "DOLNY OPIS: \n" + scrap_tables(soup_fr) +"\n" \
+    + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_fr) +"\n"
+  return text_
+
 if __name__ == '__main__':
-  
   ASIN = ''
-  soup_pl = find_url_and_prettify_PL(ASIN)
-  final_description_PL = scrap_description(soup_pl)
-  final_front_page_table_PL = scrap_tables(soup_pl)
 
-  soup_de = find_url_and_prettify_DE(ASIN)
-  final_description_PL_DE = scrap_description(soup_de)
-  final_front_page_table_PL_DE = scrap_tables(soup_de)
-  
-  final_tech_spec = tech_spec(soup_pl)
-
-  try:
-    scrap_images(soup_pl)
-  except FileExistsError:
-    pass
   
 
 
