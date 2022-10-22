@@ -1,4 +1,4 @@
-Amazon webscraper whole scrapes description, front page images and technical specs of a given product from two difrent amazon domains - polish and german. 
+Amazon webscraper whole scrapes description, front page images and technical specs of a given product from two difrent amazon domains - polish, german and french, where french is not in polish language. 
 It' s main purpuse is to speed up proces of creating product despriptions in resale stores as outlets etc. Code can be implementet to various purposes like for cloecting data for machine learning ect.
 
 
