@@ -6,7 +6,7 @@ import os
 import wget
 
 description_check = []
-
+description_p_class_check = []
 
 def find_url_and_prettify_PL(ASIN):
   url = "https://www.amazon.pl/-/dp/{}".format(ASIN)
@@ -38,13 +38,26 @@ def find_url_and_prettify_FR(ASIN):
 def scrap_description(soup):
   description = soup.find_all("p")
   description = str(description)
+  description_p_class = description
   description = re.findall(re.compile('(?<=<span>)(.*?)(?=<\/span>)'), description)
+  description_p_class = re.findall(re.compile('(?<=<p class="a-spacing-base">)(.*?)(?=<\/p>)'), description_p_class)
   final_description = ''
 
   for lines in description:
     description_check.append(lines)
     final_description = final_description + lines + '\n'
-  
+
+  compile_re = re.compile('(?<=<span class="a-list-item">)(.*?)(?=<\/span>)')
+  for lines in description_p_class:
+    if 'span' in lines:
+      lines = re.findall(compile_re,lines)
+      for line in lines:
+        description_p_class_check.append(line)
+        final_description = final_description + line + '\n'
+    else:
+      description_p_class_check.append(lines)
+      final_description = final_description + lines + '\n'
+
   return final_description
 
 def scrap_tables(soup):
@@ -86,8 +99,9 @@ def scrap_images(soup,ASIN):
   soup = str(soup)
   image_list = re.findall(re.compile('(?<={"hiRes":")(.*?)(?=","thumb")'), soup)
 
-  for image in image_list:
-    print(image)
+  if image_list[1] == None:
+    soup_fr = find_url_and_prettify_FR(ASIN)
+    image_list = re.findall(re.compile('(?<={"hiRes":")(.*?)(?=","thumb")'), soup_fr)
 
   directory = "images\\{}".format(ASIN)
   mode = 0o666
@@ -97,7 +111,6 @@ def scrap_images(soup,ASIN):
     os.mkdir(path, mode)
   except FileExistsError:
     pass
-
 
   for image in image_list:
     image_filename = wget.download(image, out=path)
@@ -116,10 +129,13 @@ def tech_spec(soup):
   for value in soup_find_values_list:
     value = str(value)
     value = value.replace("  ",'')
-
-    name = str(soup_find_names_list.pop(0))
-    name = name.replace("  ",'')
-
+    try:
+      name = str(soup_find_names_list.pop(0))
+      name = name.replace("  ",'')
+    except IndexError:
+      text = "{}: {:>15}".format(name,value)
+      final_tech_spec = final_tech_spec +"\n"
+      pass
     text = "{}: {:>15}".format(name,value)
     final_tech_spec = final_tech_spec  +text +"\n"
 
@@ -128,18 +144,23 @@ def tech_spec(soup):
 
 
 def summing_everything_up_pl(soup_pl):
-  text_ = "AMAZON PL ------------------- \n" "GŁÓWNY OPIS: \n"+ scrap_description(soup_pl) +"\n" + "DOLNY OPIS: \n" + scrap_tables(soup_pl) +"\n" \
-    + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_pl) +"\n"
+  text_ = "AMAZON PL -------------------------------------------------------------------------- \n" "GŁÓWNY OPIS: \n"+ scrap_description(soup_pl) +"\n" \
+  + "GŁÓWNA TABELA: \n\n" + scrap_tables(soup_pl) +"\n" + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_pl) +"\n"
+  
   return text_
 
 def summing_everything_up_de(soup_de):
-  text_ = "AMAZON DE ------------------- \n" + "GŁÓWNY OPIS: \n"+ scrap_description(soup_de) +"\n" + "DOLNY OPIS: \n" + scrap_tables(soup_de) +"\n" \
-    + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_de) +"\n"
+  text_ = "AMAZON DE -------------------------------------------------------------------------- \n" \
+  + "GŁÓWNY OPIS: \n"+ scrap_description(soup_de) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_de) +"\n" \
+  + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  +tech_spec(soup_de) +"\n"
+  
   return text_
 
 def summing_everything_up_fr(soup_fr):
-  text_ = "AMAZON FR  ------------------- \n" + "GŁÓWNY OPIS: \n"+ scrap_description(soup_fr) +"\n" + "DOLNY OPIS: \n" + scrap_tables(soup_fr) +"\n" \
-    + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_fr) +"\n"
+  text_ = "AMAZON FR  -------------------------------------------------------------------------- \n" \
+  + "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_fr) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_fr) +"\n" \
+  + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  +tech_spec(soup_fr) +"\n"
+  
   return text_
 
 if __name__ == '__main__':
