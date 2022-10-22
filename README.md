@@ -1,5 +1,5 @@
 Amazon webscraper whole scrapes description, front page images and technical specs of a given product from two difrent amazon domains - polish, german and french, where french is not in polish language. 
-It' s main purpuse is to speed up proces of creating product despriptions in resale stores as outlets etc. Code can be implementet to various purposes like for cloecting data for machine learning ect.
+It' s main purpuse is to speed up proces of creating product despriptions in resale stores as outlets etc. Code can also be implementet to various activities, like for colecting data for machine learning ect.
 
 
 <a href="https://drive.google.com/uc?export=view&id=1vd1_af9n1izTSyIFkO3_-bWZDnyWeAE_"><img src="https://drive.google.com/uc?export=view&id=1vd1_af9n1izTSyIFkO3_-bWZDnyWeAE_" style="width: 650px; max-width: 100%; height: auto" title="Click to enlarge picture" />
