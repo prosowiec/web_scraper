@@ -1,10 +1,10 @@
 
 import os, sys
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from threading import Thread
 from webscraper import summing_everything_up_pl,scrap_images ,find_url_and_prettify_PL, summing_everything_up_de, find_url_and_prettify_DE,\
 summing_everything_up_fr, find_url_and_prettify_FR
-
+from multiprocessing.pool import ThreadPool
                       
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -112,15 +112,23 @@ class Ui_MainWindow(object):
         self.copy.setText(_translate("MainWindow", "KOPIUJ TEKST"))
 
     def text_function(self):
+        pool = ThreadPool(processes=6)
         ASIN = str(self.ADD_ASIN.text())
-        soup_pl = find_url_and_prettify_PL(ASIN)
-        final_description_PL = summing_everything_up_pl(soup_pl)
+        soup_pl_th = pool.apply_async(find_url_and_prettify_PL, (ASIN,) )
+        soup_de_th = pool.apply_async(find_url_and_prettify_DE, (ASIN,) )
+        soup_fr_th = pool.apply_async(find_url_and_prettify_FR, (ASIN,) )
 
-        soup_de = find_url_and_prettify_DE(ASIN)
-        final_description_PL_DE = summing_everything_up_de(soup_de)
+        soup_pl = soup_pl_th.get()
+        soup_fr = soup_fr_th.get()
+        soup_de = soup_de_th.get()
 
-        soup_fr = find_url_and_prettify_FR(ASIN)
-        final_description_FR = summing_everything_up_fr(soup_fr)
+        final_description_PL_th = pool.apply_async(summing_everything_up_pl, (soup_pl,) )
+        final_description_PL_DE_th = pool.apply_async(summing_everything_up_de, (soup_de,) )
+        final_description_FR_th = pool.apply_async(summing_everything_up_fr, (soup_fr,) )
+
+        final_description_PL = final_description_PL_th.get()
+        final_description_PL_DE = final_description_PL_DE_th.get()
+        final_description_FR = final_description_FR_th.get()
 
         full_description = final_description_PL + final_description_PL_DE + final_description_FR
         self.textBrowser.setText(full_description)
