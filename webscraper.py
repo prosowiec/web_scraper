@@ -44,11 +44,13 @@ def scrap_description(soup):
   final_description = ''
 
   for lines in description:
+    lines = lines.replace('<br/>','\n')
     description_check.append(lines)
     final_description = final_description + lines + '\n'
 
   compile_re = re.compile('(?<=<span class="a-list-item">)(.*?)(?=<\/span>)')
   for lines in description_p_class:
+    lines = lines.replace('<br/>','\n')
     if 'span' in lines:
       lines = re.findall(compile_re,lines)
       for line in lines:
