@@ -76,7 +76,10 @@ def scrap_tables(soup):
       line_after_serach = line_after_serach.replace('<span class="a-size-base">','\n')
       line_after_serach = line_after_serach.replace('<span>','')
       line_after_serach = line_after_serach.replace('</span>','')
-    if line_after_serach is not None and 'class="a-declarative"' not in  line_after_serach and '<div class' not in line_after_serach and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower():
+    if line_after_serach is not None and 'class="a-declarative"' not in  line_after_serach and '<div class' not in line_after_serach \
+    and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower()\
+    and ('Korzystny cenowo wkład jednorazowy' or 'Osobista obsługa w przypadku pytań' or 'Odstąpienie od umowy jest możliwe w ciągu') not in line_after_serach  \
+    and 'Szczegółowe opisy produktu można znaleźć' not in line_after_serach:
       if line_after_serach not in tables and line_after_serach not in description_check:
         tables.append(line_after_serach)
         final_front_page_table= final_front_page_table+ line_after_serach+ '\n'
