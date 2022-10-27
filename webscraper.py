@@ -80,7 +80,7 @@ def scrap_tables(soup):
       line_after_serach = line_after_serach.replace('<span>','')
       line_after_serach = line_after_serach.replace('</span>','')
     if line_after_serach is not None and 'class="a-declarative"' not in  line_after_serach and '<div class' not in line_after_serach \
-        and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower() and '<span class' not in line_after_serach\
+        and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower() \
         and 'Korzystny cenowo wkład jednorazowy' not in line_after_serach and 'Osobista obsługa w przypadku pytań' not in line_after_serach \
         and 'Odstąpienie od umowy jest możliwe w ciągu' not in line_after_serach and 'Szczegółowe opisy produktu można znaleźć' not in line_after_serach\
         and 'Jeżeli produkt nie zostanie naprawiony' not in line_after_serach and 'brak uczestnictwa własnego lub opłat' not in line_after_serach\
