@@ -4,6 +4,7 @@ import regex as re
 from collections import defaultdict
 import os
 import wget
+from multiprocessing.pool import ThreadPool
 
 description_check = []
 description_p_class_check = []
@@ -79,9 +80,11 @@ def scrap_tables(soup):
       line_after_serach = line_after_serach.replace('<span>','')
       line_after_serach = line_after_serach.replace('</span>','')
     if line_after_serach is not None and 'class="a-declarative"' not in  line_after_serach and '<div class' not in line_after_serach \
-    and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower()\
-    and ('Korzystny cenowo wkład jednorazowy' or 'Osobista obsługa w przypadku pytań' or 'Odstąpienie od umowy jest możliwe w ciągu') not in line_after_serach  \
-    and 'Szczegółowe opisy produktu można znaleźć' not in line_after_serach:
+        and "gwarancj"  not in line_after_serach.lower()  and "href"  not in line_after_serach.lower() and '<span class' not in line_after_serach\
+        and 'Korzystny cenowo wkład jednorazowy' not in line_after_serach and 'Osobista obsługa w przypadku pytań' not in line_after_serach \
+        and 'Odstąpienie od umowy jest możliwe w ciągu' not in line_after_serach and 'Szczegółowe opisy produktu można znaleźć' not in line_after_serach\
+        and 'Jeżeli produkt nie zostanie naprawiony' not in line_after_serach and 'brak uczestnictwa własnego lub opłat' not in line_after_serach\
+        and 'anuluj pełny zwrot pieniędzy w ciągu 2 lat' not in line_after_serach and 'Pełny opis produktu można znaleźć w informacjach' not in line_after_serach:
       if line_after_serach not in tables and line_after_serach not in description_check:
         tables.append(line_after_serach)
         final_front_page_table= final_front_page_table+ line_after_serach+ '\n'
@@ -151,22 +154,37 @@ def tech_spec(soup):
 
 
 def summing_everything_up_pl(soup_pl):
-  text_ = "AMAZON PL -------------------------------------------------------------------------- \n" "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_pl) +"\n" \
-  + "GŁÓWNA TABELA: \n" + scrap_tables(soup_pl) +"\n" + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_pl) +"\n"
+  pool = ThreadPool()
+  scrap_tables_th = pool.apply_async(scrap_tables, (soup_pl,) )
+  scrap_description_th = pool.apply_async(scrap_description, (soup_pl,) )
+  tech_spec_th = pool.apply_async(tech_spec, (soup_pl,) )
+
+  text_ = "AMAZON PL -------------------------------------------------------------------------- \n" "GŁÓWNY OPIS: \n\n"+ scrap_description_th.get() +"\n" \
+  + "GŁÓWNA TABELA: \n" + scrap_tables_th.get() +"\n" + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec_th.get() +"\n"
   
   return text_
 
 def summing_everything_up_de(soup_de):
+  pool = ThreadPool()
+  scrap_tables_th = pool.apply_async(scrap_tables, (soup_de,) )
+  scrap_description_th = pool.apply_async(scrap_description, (soup_de,) )
+  tech_spec_th = pool.apply_async(tech_spec, (soup_de,) )
+
   text_ = "AMAZON DE -------------------------------------------------------------------------- \n" \
-  + "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_de) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_de) +"\n" \
-  + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  +tech_spec(soup_de) +"\n"
+  + "GŁÓWNY OPIS: \n\n"+ scrap_description_th.get() +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables_th.get() +"\n" \
+  + "WŁAŚCIWOŚCI TECHNICZNE: \n\n"  + tech_spec_th.get() +"\n"
   
   return text_
 
 def summing_everything_up_fr(soup_fr):
+  pool = ThreadPool()
+  scrap_tables_th = pool.apply_async(scrap_tables, (soup_fr,) )
+  scrap_description_th = pool.apply_async(scrap_description, (soup_fr,) )
+  tech_spec_th = pool.apply_async(tech_spec, (soup_fr,) )
+
   text_ = "AMAZON FR  -------------------------------------------------------------------------- \n" \
-  + "GŁÓWNY OPIS: \n\n"+ scrap_description(soup_fr) +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables(soup_fr) +"\n" \
-  + "WŁAŚCIWOŚCI TECHNICZNE: \n"  +tech_spec(soup_fr) +"\n"
+  + "GŁÓWNY OPIS: \n\n"+ scrap_description_th.get() +"\n" + "GŁÓWNA TABELA: \n" + scrap_tables_th.get() +"\n" \
+  + "WŁAŚCIWOŚCI TECHNICZNE: \n"  + tech_spec_th.get() +"\n"
   
   return text_
 

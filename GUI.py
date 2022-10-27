@@ -1,5 +1,6 @@
 
-import os, sys
+import os
+import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from threading import Thread
 from webscraper import summing_everything_up_pl,scrap_images ,find_url_and_prettify_PL, summing_everything_up_de, find_url_and_prettify_DE,\
@@ -112,7 +113,7 @@ class Ui_MainWindow(object):
         self.copy.setText(_translate("MainWindow", "KOPIUJ TEKST"))
 
     def text_function(self):
-        pool = ThreadPool(processes=6)
+        pool = ThreadPool()
         ASIN = str(self.ADD_ASIN.text())
         soup_pl_th = pool.apply_async(find_url_and_prettify_PL, (ASIN,) )
         soup_de_th = pool.apply_async(find_url_and_prettify_DE, (ASIN,) )
